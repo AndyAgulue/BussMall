@@ -4,16 +4,16 @@
 //   timesShown
 //   image
 
-function Products(asset) {
+function Products(image) {
   this.timesClicked = 0;
   this.timesShown = 0;
-  this.image = asset;
+  this.image = image;
 
-  Products.allAssets.push(this);
+  Products.allImages.push(this);
 }
 
 // Creates our allImages property on the GoatImage Contructor
-Products.allAssets = [];
+Products.allImages = [];
 
 
 // creates the goatImage, and runs the operations within the constructor
@@ -37,7 +37,7 @@ new Products('assets/unicorn.jpg');
 new Products('assets/usb.gif');
 new Products('assets/water-can.jpg');
 new Products('assets/wine-glass.jpg');
-console.log(Products.allAssets);
+console.log(Products.allImages);
 
 // select elements from my HTML to render goat stuff
 
@@ -50,39 +50,40 @@ var rightProduct = document.getElementById('right-photo');
 function generateRandomProducts() {
 
   // randomIndex from our  array
-  var leftIndex = Math.floor(Math.random() * Products.allAssets.length);
-  var middleIndex = Math.floor(Math.random() * Products.allAssets.length);
-  var rightIndex = Math.floor(Math.random() * Products.allAssets.length);
+  var leftIndex = Math.floor(Math.random() * Products.allImages.length);
+  var middleIndex = Math.floor(Math.random() * Products.allImages.length);
+  var rightIndex = Math.floor(Math.random() * Products.allImages.length);
 
-  while (leftIndex === middleIndex) {
-    leftIndex = Math.floor(Math.random() * Products.allAssets.length);
-  }if (middleIndex === rightIndex){
-    middleIndex = Math.floor(Math.random() * Products.allAssets.length);
+  while (rightIndex === middleIndex) {
+    rightIndex = Math.floor(Math.random() * Products.allImages.length);
+  }if (middleIndex === leftIndex){
+    middleIndex = Math.floor(Math.random() * Products.allImages.length);
   }
 
-  var leftAsset = Products.allAssets[leftIndex];
-  var middleAsset = Products.allAssets[middleIndex];
-  var rightAsset = Products.allAssets[rightIndex];
+  var leftProduct = Products.allImages[leftIndex];
+  var middleProduct = Products.allImages[middleIndex];
+  var rightProduct = Products.allImages[rightIndex];
 
-  return [leftAsset, middleAsset, rightAsset];
+  return [leftProduct, middleProduct, rightProduct];
 }
+console.log(leftProduct, middleProduct, rightProduct)
 
-function renderAssets(leftAsset, middleAsset, rightAsset){
-  leftAsset.src = leftAsset.assets;
-  leftAsset.timesShown++;
+function renderAssets(leftProduct, middleProduct, rightProduct){
+  leftAsset.src =  'left-photo', leftProduct.image;
+  leftProduct.timesShown++;
   // leftGoatImage.setAttribute('data-id', leftGoat.image);
   
-  middleAsset.src = middleAsset.assets;
-  middleAsset.timeShown++;
+  middleAsset.src = 'middle-photo', middleProduct.image;
+  middleProduct.timeShown++;
 
-  rightAsset.src = rightAsset.assets;
+  rightAsset.src = 'right-photo', rightProduct.image;
   rightAsset.timesShown++;
   // rightGoatImage.setAttribute('data-id', rightGoat.image);
 }
-
+console.log(leftProduct, middleProduct, rightProduct )
 // initialize our page
-var randomProducts = generateRandomProducts();
-renderAssets(randomProducts[0], randomProducts[1], randomProducts[2]);
+var randomProduct = generateRandomProducts();
+renderAssets(randomProduct[0], randomProduct[1], randomProduct[2]);
 
 
 // how do we do something everytime an image was clicked
@@ -90,12 +91,12 @@ productBox.addEventListener('click', function (event) {
   console.log(event.target); // the actual item that was clicked
 
   // how do identify which image is clicked.  Increment the object that was clicked.
-  for (var i = 0; i < Products.allAssets.length; i++) {
-    if (event.target.src.includes(Products.allAssets[i].image)) {
-      Products.allAssets[i].timesClicked++;
-      console.log(Products.allAssets[i]);
+  for (var i = 0; i < Products.allImages.length; i++) {
+    if (event.target.src.includes(Products.allImages[i].image)) {
+      Products.allImages[i].timesClicked++;
+      console.log(Products.allImages[i]);
     }
   }
-  var newAssets = generateRandomProducts();
-  renderPhoto(newAssets[0], newAssets[1], newAssets[2]);
+  var newProducts = generateRandomProducts();
+  renderAssets(newProducts[0], newProducts[1], newProducts[2]);
 });
