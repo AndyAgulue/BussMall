@@ -150,11 +150,74 @@ for (var i = 0; i < ProductImage.allImages.length; i++){
 // var ctx = document.getElementById('myChart').getContext('2d');
 
 
-// var votesByProduct = [];
-// var timesProductsAreShow = [];
+var ctx = document.getElementById('myChart').getContext('2d');
 
-// // what is this for loop doing?
-// //  Is it required?
-// for (var i = 0; i < ProductImage.allImages.length; i++) {
-//   votesByProduct.push(ProductImage.allImages[i].timesClicked);
-// }
+
+var votesByProduct = [];
+var timesProductsAreShown = [];
+
+
+for (var i = 0; i < ProductImage.allImages.length; i++) {
+  votesByProduct.push(ProductImage.allImages[i].timesClicked);
+} 
+
+// This is an object constructor, from chart.js.  Because we have installed our chart.js file from the cdn, we should have access to a new constructor
+ var myChart = new Chart(ctx, {
+   
+  type: 'bar',
+  data: {
+    labels: products = ['bag', 'banana', 'bathroom', 'boots', 'breakfast', 'bubblegum', 'chair', 'cthulhu', 'dog-duck', 'dragon', 'pen', 'pet-sweep', 'scissors', 'shark', 'sweep', 'tauntaun', 'unicorn', 'usb', 'water-can', 'wine-glass'], 
+    datasets: [{
+      label: 'times clicked',
+      data: [Pr], // array of numbers goes here
+       // data: votesByProduct, 
+      backgroundColor: [
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(255, 159, 64, 0.2)'
+      ],
+      borderColor: [
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+        'rgba(255, 159, 64, 1)'
+      ],
+     borderWidth: 1
+    },
+    {
+      label: 'times Shows',
+      data: [],
+      backgroundColor: [
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(255, 159, 64, 0.2)'
+      ],
+      borderColor: [
+        'rgba(257, 100, 144, 3)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+        'rgba(255, 159, 64, 1)'
+      ],
+      borderWidth: 1
+    }]
+  },
+  options: {
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        }
+      }]
+    }
+  }
+});
