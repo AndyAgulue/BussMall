@@ -9,6 +9,10 @@ var middleImageElement = document.getElementById('middle-image');
 //var imageInfo = document.getElementById('image-info')
 var roundsOfVoting = 25;
 
+var ctx = document.getElementById('myChart').getContext('2d');
+var votesByProduct = [];
+var timesProductsAreShown = []
+
 
 function ProductImage(name) {
   this.name = name.substring(0, name.length - 4);// grabs the substring from the first position of the string, up until the forth position from the end.
@@ -16,7 +20,7 @@ function ProductImage(name) {
   this.timesClicked = 0;// 'this' refers to the object that the constructor is creating
   this.image = `images/${name}`;
 
-  
+
   ProductImage.allImages.push(this);
   // Mapping using bracket notation on an objects to assign he object to a key that is this.name
   ProductImage.imageMap[this.name] = this;
@@ -48,7 +52,7 @@ function generateRandomImages() {
     }
     if (leftIndex === middleIndex) {
       middleIndex = Math.floor(Math.random() * ProductImage.allImages.length);
-    } 
+    }
     if (middleIndex === rightIndex) {
       rightIndex = Math.floor(Math.random() * ProductImage.allImages.length);// Adding additional conditional here to account for the added condition in the while
     }
@@ -96,7 +100,7 @@ function renderImages() {
     currentlyRenderedImages[2] === newImages[2].name ||
     currentlyRenderedImages[0] === newImages[0].name ||
     currentlyRenderedImages[1] === newImages[0].name
-  ){
+  ) {
     newImages = generateRandomImages();
   }
 
@@ -127,34 +131,155 @@ function handleImageClick(event) {
     // anything that needs to happen afer voting is completed
     imageContainer.removeEventListener('click', handleImageClick);
     renderResults();
+    renderChart();
   }
 }
 
 renderImages();
 imageContainer.addEventListener('click', handleImageClick);
 
-function renderResults() { 
-var imageInfo = document.getElementById('image-info')
-for (var i = 0; i < ProductImage.allImages.length; i++){
-  var rowElement = document.createElement('tr');
-  var nameElement = document.createElement('td');
-  nameElement.textContent = ProductImage.allImages[i].name + ProductImage.allImages[i].timesClicked +  ProductImage.allImages[i].timesShown;
+function renderResults() {
+  var imageInfo = document.getElementById('image-info')
+  for (var i = 0; i < ProductImage.allImages.length; i++) {
+    var rowElement = document.createElement('tr');
+    var nameElement = document.createElement('td');
+    var cellElement = document.createElement('td');
+    nameElement.textContent = ProductImage.allImages[i].name + ProductImage.allImages[i].timesClicked + ProductImage.allImages[i].timesShown;
+    cellElement.textContent = ProductImage.allImages[i].timesClicked;
+    cellElement.textContent = ProductImage.allImages[i].timesShown;
     rowElement.appendChild(nameElement);
+    nameElement.appendChild(cellElement);
+    rowElement.appendChild(cellElement);
     imageInfo.appendChild(rowElement);
+  }
 }
-}
-  
-  
+
+
 // // this grabs our canvas element and select a context called ('2d;);
 // //    this operation enables us to draw 2 dimensional shapes use the ctx variable
 // var ctx = document.getElementById('myChart').getContext('2d');
 
-
+function renderChart() { 
+// var ctx = document.getElementById('myChart').getContext('2d');
 // var votesByProduct = [];
-// var timesProductsAreShow = [];
+// var timesProductsAreShown = [];
 
-// // what is this for loop doing?
-// //  Is it required?
-// for (var i = 0; i < ProductImage.allImages.length; i++) {
-//   votesByProduct.push(ProductImage.allImages[i].timesClicked);
-// }
+
+for (var i = 0; i < ProductImage.allImages.length; i++) {
+  votesByProduct.push(ProductImage.allImages[i].timesClicked);
+  timesProductsAreShown.push(ProductImage.allImages[i].timesShown);
+}
+
+// This is an object constructor, from chart.js.  Because we have installed our chart.js file from the cdn, we should have access to a new constructor
+var myChart = new Chart(ctx, {
+
+  type: 'bar',
+  data: {
+    labels: products = ['bag', 'banana', 'bathroom', 'boots', 'breakfast', 'bubblegum', 'chair', 'cthulhu', 'dog-duck', 'dragon', 'pen', 'pet-sweep', 'scissors', 'shark', 'sweep', 'tauntaun', 'unicorn', 'usb', 'water-can', 'wine-glass'],
+    datasets: [{
+      label: 'times clicked',
+      data: votesByProduct, // array of numbers goes here
+      // data: votesByProduct, 
+      backgroundColor: [
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(255, 159, 64, 0.2)',
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(255, 159, 64, 0.2)',
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(255, 159, 64, 0.2)',
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)'
+      ],
+      borderColor: [
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+        'rgba(255, 159, 64, 1)',
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+        'rgba(255, 159, 64, 1)',
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+        'rgba(255, 159, 64, 1)',
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)'
+      ],
+      borderWidth: 1
+    },
+    {
+      label: 'times Shown',
+      data: timesProductsAreShown,
+      backgroundColor: [
+        'rgba(300, 65, 132, 1)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(255, 159, 64, 0.2)',
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(255, 159, 64, 0.2)',
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(255, 159, 64, 0.2)',
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)'
+      ],
+      borderColor: [
+        'rgba(250, 100, 144, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+        'rgba(255, 159, 64, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+        'rgba(255, 159, 64, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+        'rgba(255, 159, 64, 1)'
+      ],
+      borderWidth: 1
+    }]
+  },
+  options: {
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        }
+      }]
+    }
+  }
+});
+}  
