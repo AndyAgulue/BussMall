@@ -174,13 +174,15 @@ function renderImages() {
   }
   // fillProductsArray();
 function checkLocalStorage(){
-  if (localStorage){
+  if (!localStorage.getItem('image-info')){
+    populateStorage();
 // if the data exists, grab that data then assign to the ProductImage array
   }else {
 // if it doesn't, create data
+setStyles();
   }
 }
-
+checkLocalStorage();
   
 // // this grabs our canvas element and select a context called ('2d;);
 // //    this operation enables us to draw 2 dimensional shapes use the ctx variable
