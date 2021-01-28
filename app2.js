@@ -11,26 +11,26 @@ var roundsOfVoting = 25;
 
 var ctx = document.getElementById('myChart').getContext('2d');
 var votesByProduct = [];
-var timesProductsAreShown = []
+var timesProductsAreShown = [];
 
-
+// var resultsFromLocalStorage = localStorage.getItem('image-info');
+// var resultsAsAnArray = JSON.parse(resultsFromLocalStorage);
+ProductImage.allImages = [];
+ProductImage.imageMap = {};
 function ProductImage(name) {
   this.name = name.substring(0, name.length - 4);// grabs the substring from the first position of the string, up until the forth position from the end.
   this.timesShown = 0;
   this.timesClicked = 0;// 'this' refers to the object that the constructor is creating
   this.image = `images/${name}`;
-
-
+  
+  
   ProductImage.allImages.push(this);
   // Mapping using bracket notation on an objects to assign he object to a key that is this.name
   ProductImage.imageMap[this.name] = this;
 }
 
-ProductImage.allImages = [];
-ProductImage.imageMap = {};
-for (var i = 0; i < products.length; i++) {// Loop through the products 
-  new ProductImage(products[i]);
-}
+fillProductsArray();
+
 // console.log(ProductImage.allImages);
 // console.log(ProductImage.imageMap);
 
@@ -43,7 +43,7 @@ function generateRandomImages() {
   var leftIndex = Math.floor(Math.random() * ProductImage.allImages.length);
   var rightIndex = Math.floor(Math.random() * ProductImage.allImages.length);
   var middleIndex = Math.floor(Math.random() * ProductImage.allImages.length);
-
+  
   // as long as the their is one duplicate index
   //   UPDATE:  We also need to check whether our middle and right Index are equal, that added index increases our complexity more that just double since everything needs to be compared.
   while (leftIndex === rightIndex || leftIndex === middleIndex || middleIndex === rightIndex) {
@@ -57,25 +57,25 @@ function generateRandomImages() {
       rightIndex = Math.floor(Math.random() * ProductImage.allImages.length);// Adding additional conditional here to account for the added condition in the while
     }
   }
-
+  
   var leftProductImage = ProductImage.allImages[leftIndex];
   var middleProductImage = ProductImage.allImages[middleIndex];
   var rightProductImage = ProductImage.allImages[rightIndex];
-
+  
   return [leftProductImage, middleProductImage, rightProductImage];
 }
 
 function renderImages() {
-
+  
   //  What is currently rendered?
   var currentlyRenderedImages = [leftImageElement.name, rightImageElement.name, middleImageElement.name];
-
+  
   var newImages = generateRandomImages();
-
+  
   // let's duscuss .includes
   //   method that loops through a data type (either a string or an array)
   //   and returns a boolean if it finds a match.
-
+  
   //   ensure that there are not the images that were previously rendered
   //     What is going to be the new images currently rendered?
   //     images from the previous state to our new state cannot be duplicated.
@@ -100,61 +100,90 @@ function renderImages() {
     currentlyRenderedImages[2] === newImages[2].name ||
     currentlyRenderedImages[0] === newImages[0].name ||
     currentlyRenderedImages[1] === newImages[0].name
-  ) {
-    newImages = generateRandomImages();
-  }
-
-  // render new images to the page
-  leftImageElement.src = newImages[0].image;
-  leftImageElement.name = newImages[0].name;
-  newImages[0].timesShown++;
-
-  middleImageElement.src = newImages[1].image;
-  middleImageElement.name = newImages[1].name;
-  newImages[1].timesShown++;
-
-  rightImageElement.src = newImages[2].image;
-  rightImageElement.name = newImages[2].name;
-  newImages[2].timesShown++;
-}
-
-function handleImageClick(event) {
-  roundsOfVoting--;
-  for (var i = 0; i < ProductImage.allImages.length; i++) {
-    if (event.target.name === ProductImage.allImages[i].name) {
-      ProductImage.allImages[i].timesClicked++;
-      console.log(ProductImage.allImages[i]);
+    ) {
+      newImages = generateRandomImages();
     }
+    
+    // render new images to the page
+    leftImageElement.src = newImages[0].image;
+    leftImageElement.name = newImages[0].name;
+    newImages[0].timesShown++;
+    
+    middleImageElement.src = newImages[1].image;
+    middleImageElement.name = newImages[1].name;
+    newImages[1].timesShown++;
+    
+    rightImageElement.src = newImages[2].image;
+    rightImageElement.name = newImages[2].name;
+    newImages[2].timesShown++;
+  }
+  
+  function handleImageClick(event) {
+    roundsOfVoting--;
+    for (var i = 0; i < ProductImage.allImages.length; i++) {
+      if (event.target.name === ProductImage.allImages[i].name) {
+        ProductImage.allImages[i].timesClicked++;
+        console.log(ProductImage.allImages[i]);
+      }
+      event.preventDefault();
+    }
+    renderImages();
+    if (!roundsOfVoting) {
+      imageContainer.removeEventListener('click', handleImageClick); // anything that needs to happen afer voting is completed
+      renderResults();
+      renderChart();
+      storeObjects(ProductImage.allImages);
+      
+      // var stringify = localStorage.getItem('image-info');
+      // return JSON.parse.renderResults, stringify;
+    }     
+  }
+  
+  function storeObjects(obj) {
+    var stringify = JSON.stringify(obj);
+    localStorage.setItem('imageInfo', stringify);
+  }
+  function fetchObject(key) {
+    var stringify = localStorage.getItem(key);
+    return JSON.parse(stringify);
   }
   renderImages();
-  if (!roundsOfVoting) {
-    // anything that needs to happen afer voting is completed
-    imageContainer.removeEventListener('click', handleImageClick);
-    renderResults();
-    renderChart();
+  imageContainer.addEventListener('click', handleImageClick);
+  
+  
+  function renderResults() {
+    var imageInfo = document.getElementById('image-info')
+    for (var i = 0; i < ProductImage.allImages.length; i++) {
+      var rowElement = document.createElement('tr');
+      var nameElement = document.createElement('td');
+      var cellElement = document.createElement('td');
+      nameElement.textContent = ProductImage.allImages[i].name + ProductImage.allImages[i].timesClicked + ProductImage.allImages[i].timesShown;
+      cellElement.textContent = ProductImage.allImages[i].timesClicked;
+      cellElement.textContent = ProductImage.allImages[i].timesShown;
+      rowElement.appendChild(nameElement);
+      nameElement.appendChild(cellElement);
+      rowElement.appendChild(cellElement);
+      imageInfo.appendChild(rowElement);
+    }
+  }
+  function fillProductsArray(){
+    for (var i = 0; i < products.length; i++) { // Loop through the products 
+      console.log(products[i]);
+      new ProductImage(products[i]);
+   }
+  }
+  // fillProductsArray();
+function checkLocalStorage(){
+  if (!localStorage.getItem('image-info')){
+    populateStorage();
+// if the data exists, grab that data then assign to the ProductImage array
+  }else {
+// if it doesn't, create data
+setStyles();
   }
 }
-
-renderImages();
-imageContainer.addEventListener('click', handleImageClick);
-
-function renderResults() {
-  var imageInfo = document.getElementById('image-info')
-  for (var i = 0; i < ProductImage.allImages.length; i++) {
-    var rowElement = document.createElement('tr');
-    var nameElement = document.createElement('td');
-    var cellElement = document.createElement('td');
-    nameElement.textContent = ProductImage.allImages[i].name + ProductImage.allImages[i].timesClicked + ProductImage.allImages[i].timesShown;
-    cellElement.textContent = ProductImage.allImages[i].timesClicked;
-    cellElement.textContent = ProductImage.allImages[i].timesShown;
-    rowElement.appendChild(nameElement);
-    nameElement.appendChild(cellElement);
-    rowElement.appendChild(cellElement);
-    imageInfo.appendChild(rowElement);
-  }
-}
-
-
+checkLocalStorage();
+  
 // // this grabs our canvas element and select a context called ('2d;);
 // //    this operation enables us to draw 2 dimensional shapes use the ctx variable
 // var ctx = document.getElementById('myChart').getContext('2d');
@@ -267,7 +296,11 @@ var myChart = new Chart(ctx, {
         'rgba(255, 206, 86, 1)',
         'rgba(75, 192, 192, 1)',
         'rgba(153, 102, 255, 1)',
-        'rgba(255, 159, 64, 1)'
+        'rgba(255, 159, 64, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)'
       ],
       borderWidth: 1
     }]
