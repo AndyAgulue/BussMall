@@ -6,15 +6,12 @@ var imageContainer = document.getElementById('image-container');
 var leftImageElement = document.getElementById('left-image');
 var rightImageElement = document.getElementById('right-image');
 var middleImageElement = document.getElementById('middle-image');
-//var imageInfo = document.getElementById('image-info')
 var roundsOfVoting = 25;
-
 var ctx = document.getElementById('myChart').getContext('2d');
 var votesByProduct = [];
 var timesProductsAreShown = [];
 
-// var resultsFromLocalStorage = localStorage.getItem('image-info');
-// var resultsAsAnArray = JSON.parse(resultsFromLocalStorage);
+
 ProductImage.allImages = [];
 ProductImage.imageMap = {};
 function ProductImage(name) {
@@ -28,22 +25,15 @@ function ProductImage(name) {
   // Mapping using bracket notation on an objects to assign he object to a key that is this.name
   ProductImage.imageMap[this.name] = this;
 }
-
 fillProductsArray();
-
-// console.log(ProductImage.allImages);
-// console.log(ProductImage.imageMap);
-
 /**
  * Functions for handling User click logic and Product generation & rendering
  */
-
 // returns 3 random images from ProductImage.allImages
 function generateRandomImages() {
   var leftIndex = Math.floor(Math.random() * ProductImage.allImages.length);
   var rightIndex = Math.floor(Math.random() * ProductImage.allImages.length);
-  var middleIndex = Math.floor(Math.random() * ProductImage.allImages.length);
-  
+  var middleIndex = Math.floor(Math.random() * ProductImage.allImages.length); 
   // as long as the their is one duplicate index
   //   UPDATE:  We also need to check whether our middle and right Index are equal, that added index increases our complexity more that just double since everything needs to be compared.
   while (leftIndex === rightIndex || leftIndex === middleIndex || middleIndex === rightIndex) {
@@ -56,15 +46,13 @@ function generateRandomImages() {
     if (middleIndex === rightIndex) {
       rightIndex = Math.floor(Math.random() * ProductImage.allImages.length);// Adding additional conditional here to account for the added condition in the while
     }
-  }
-  
+  } 
   var leftProductImage = ProductImage.allImages[leftIndex];
   var middleProductImage = ProductImage.allImages[middleIndex];
   var rightProductImage = ProductImage.allImages[rightIndex];
   
   return [leftProductImage, middleProductImage, rightProductImage];
 }
-
 function renderImages() {
   
   //  What is currently rendered?
@@ -133,12 +121,8 @@ function renderImages() {
       renderResults();
       renderChart();
       storeObjects(ProductImage.allImages);
-      
-      // var stringify = localStorage.getItem('image-info');
-      // return JSON.parse.renderResults, stringify;
     }     
   }
-  
   function storeObjects(obj) {
     var stringify = JSON.stringify(obj);
     localStorage.setItem('imageInfo', stringify);
@@ -183,25 +167,16 @@ setStyles();
   }
 }
 checkLocalStorage();
-  
+ 
 // // this grabs our canvas element and select a context called ('2d;);
 // //    this operation enables us to draw 2 dimensional shapes use the ctx variable
-// var ctx = document.getElementById('myChart').getContext('2d');
-
 function renderChart() { 
-// var ctx = document.getElementById('myChart').getContext('2d');
-// var votesByProduct = [];
-// var timesProductsAreShown = [];
-
-
 for (var i = 0; i < ProductImage.allImages.length; i++) {
   votesByProduct.push(ProductImage.allImages[i].timesClicked);
   timesProductsAreShown.push(ProductImage.allImages[i].timesShown);
 }
-
 // This is an object constructor, from chart.js.  Because we have installed our chart.js file from the cdn, we should have access to a new constructor
 var myChart = new Chart(ctx, {
-
   type: 'bar',
   data: {
     labels: products = ['bag', 'banana', 'bathroom', 'boots', 'breakfast', 'bubblegum', 'chair', 'cthulhu', 'dog-duck', 'dragon', 'pen', 'pet-sweep', 'scissors', 'shark', 'sweep', 'tauntaun', 'unicorn', 'usb', 'water-can', 'wine-glass'],
